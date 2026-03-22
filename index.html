@@ -1169,7 +1169,7 @@ async function fetchAIHint(idx) {
   box.style.display = 'block';
   box.textContent = 'Sensei réfléchit…';
   try {
-    const res = await fetch('/api/sensei', {
+    const res = await fetch('/.netlify/functions/sensei', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:300,
@@ -1244,7 +1244,7 @@ Règles :
 - Réponds UNIQUEMENT avec le JSON`;
 
   try {
-    const res = await fetch('/api/sensei', {
+    const res = await fetch('/.netlify/functions/sensei', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
