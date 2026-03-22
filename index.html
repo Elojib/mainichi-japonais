@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>毎日 Mainichi — Japonais quotidien</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f3ee;
+  --bg2: #efe9e0;
+  --ink: #1c1917;
+  --ink2: #57534e;
+  --ink3: #a8a29e;
+  --red: #dc2626;
+  --red-soft: #fef2f2;
+  --gold: #b45309;
+  --gold-soft: #fffbeb;
+  --teal: #0f766e;
+  --teal-soft: #f0fdfa;
+  --card: #ffffff;
+  --border: #e7e0d8;
+  --border2: #d4c9bc;
+  --green: #16a34a;
+  --green-soft: #f0fdf4;
+  --shadow: 0 1px 3px rgba(28,25,23,0.08), 0 4px 16px rgba(28,25,23,0.04);
+  --shadow-lg: 0 4px 24px rgba(28,25,23,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4b5a0' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--card);
+  border-bottom: 1.5px solid var(--border);
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--shadow);
+}
+.logo { display:flex; align-items:baseline; gap:0.5rem; }
+.logo-kanji { font-family:'Noto Sans JP',sans-serif; font-size:1.5rem; font-weight:700; color:var(--red); }
+.logo-text { font-size:1rem; font-weight:800; letter-spacing:-0.02em; color:var(--ink); }
+.logo-sub { font-family:'Syne Mono',monospace; font-size:0.68rem; color:var(--ink3); margin-left:0.3rem; }
+
+.stats { display:flex; gap:1rem; align-items:center; }
+.stat-pill {
+  display:flex; align-items:center; gap:0.35rem;
+  font-family:'Syne Mono',monospace; font-size:0.72rem;
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:20px; padding:0.3rem 0.75rem; color:var(--ink2);
+}
+.stat-pill b { color:var(--ink); }
+
+/* ── MAIN LAYOUT ── */
+main { max-width:780px; margin:0 auto; padding:1.5rem 1.2rem 4rem; }
+
+/* ── VIEWS ── */
+.view { display:none; }
+.view.active { display:block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── HOME VIEW ── */
+.today-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 1.8rem;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.today-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+}
+.today-eyebrow {
+  font-family:'Syne Mono',monospace; font-size:0.68rem;
+  text-transform:uppercase; letter-spacing:0.12em; color:var(--red);
+  margin-bottom:0.5rem;
+}
+.today-title { font-size:1.6rem; font-weight:800; color:var(--ink); margin-bottom:0.3rem; line-height:1.1; }
+.today-title span { color:var(--red); }
+.today-desc { font-family:'Noto Sans JP',sans-serif; font-size:0.88rem; color:var(--ink2); line-height:1.7; margin-bottom:1.2rem; }
+.today-meta { display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:1.4rem; }
+.meta-tag {
+  font-family:'Syne Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em;
+  padding:0.25rem 0.7rem; border-radius:20px; border:1px solid;
+}
+.mt-time { border-color:#fed7aa; color:#c2410c; background:#fff7ed; }
+.mt-phase { border-color:var(--border2); color:var(--ink2); background:var(--bg2); }
+.mt-moment { border-color:#bbf7d0; color:#15803d; background:#f0fdf4; }
+
+.start-btn {
+  font-family:'Syne',sans-serif; font-weight:700; font-size:1rem;
+  background:var(--red); color:white; border:none;
+  border-radius:12px; padding:1rem 2rem; cursor:pointer;
+  transition:all 0.2s; width:100%; letter-spacing:-0.01em;
+  display:flex; align-items:center; justify-content:center; gap:0.6rem;
+}
+.start-btn:hover { background:#b91c1c; transform:translateY(-1px); box-shadow:0 6px 20px rgba(220,38,38,0.25); }
+.start-btn:disabled { background:var(--ink3); cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* Progress ring */
+.progress-ring-wrap { display:flex; justify-content:center; margin:1.5rem 0; }
+.progress-ring { transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:var(--border2); stroke-width:6; }
+.ring-fill { fill:none; stroke:var(--red); stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 0.8s ease; }
+.ring-center { position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-wrap { position:relative; display:inline-flex; align-items:center; justify-content:center; }
+.ring-day { font-size:2.2rem; font-weight:800; color:var(--ink); line-height:1; }
+.ring-label { font-family:'Syne Mono',monospace; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3); }
+
+/* Week grid */
+.week-title { font-family:'Syne Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3); margin-bottom:0.8rem; }
+.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:0.4rem; margin-bottom:1.5rem; }
+.week-day {
+  aspect-ratio:1; border-radius:8px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  border:1.5px solid var(--border); background:var(--bg2);
+  font-family:'Syne Mono',monospace; font-size:0.6rem; color:var(--ink3);
+  cursor:default; transition:all 0.2s;
+}
+.week-day.done { background:var(--green-soft); border-color:#bbf7d0; color:var(--green); }
+.week-day.done .wday-icon { font-size:0.9rem; }
+.week-day.today { border-color:var(--red); background:var(--red-soft); color:var(--red); }
+.week-day.today .wday-num { font-weight:800; }
+.wday-num { font-size:0.75rem; font-weight:700; }
+
+/* Phase overview */
+.phases-title { font-family:'Syne Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink3); margin-bottom:0.8rem; }
+.phases-list { display:flex; flex-direction:column; gap:0.5rem; }
+.phase-row {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:12px; padding:0.9rem 1.1rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.phase-row.current { border-color:var(--red); background:var(--red-soft); }
+.phase-dot { width:8px; height:8px; border-radius:50%; background:var(--border2); flex-shrink:0; }
+.phase-row.current .phase-dot { background:var(--red); }
+.phase-row.done .phase-dot { background:var(--green); }
+.phase-info { flex:1; }
+.phase-name { font-size:0.88rem; font-weight:700; color:var(--ink); }
+.phase-weeks { font-family:'Syne Mono',monospace; font-size:0.68rem; color:var(--ink3); }
+.phase-badge { font-family:'Syne Mono',monospace; font-size:0.65rem; padding:0.2rem 0.6rem; border-radius:20px; }
+.pb-current { background:var(--red); color:white; }
+.pb-next { background:var(--bg2); color:var(--ink3); border:1px solid var(--border2); }
+
+/* ── LESSON VIEW ── */
+.lesson-header {
+  display:flex; align-items:center; gap:0.8rem; margin-bottom:1.5rem;
+}
+.back-btn {
+  font-family:'Syne Mono',monospace; font-size:0.75rem;
+  background:none; border:1.5px solid var(--border); border-radius:8px;
+  padding:0.4rem 0.8rem; color:var(--ink2); cursor:pointer; transition:all 0.2s;
+}
+.back-btn:hover { border-color:var(--ink2); color:var(--ink); }
+.lesson-progress { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.lesson-progress-fill { height:100%; background:linear-gradient(90deg,var(--red),var(--gold)); border-radius:2px; transition:width 0.4s ease; }
+.lesson-step-label { font-family:'Syne Mono',monospace; font-size:0.7rem; color:var(--ink3); white-space:nowrap; }
+
+/* Step cards */
+.step-card {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:20px; padding:1.8rem; box-shadow:var(--shadow);
+  min-height:300px; display:flex; flex-direction:column;
+}
+.step-eyebrow {
+  font-family:'Syne Mono',monospace; font-size:0.65rem;
+  text-transform:uppercase; letter-spacing:0.12em;
+  margin-bottom:0.8rem;
+}
+.ey-review { color:var(--teal); }
+.ey-lesson { color:var(--red); }
+.ey-practice { color:var(--gold); }
+.ey-phrase { color:var(--green); }
+
+.step-title { font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:1rem; line-height:1.2; }
+.step-body { flex:1; font-family:'Noto Sans JP',sans-serif; font-size:0.9rem; color:var(--ink2); line-height:1.8; }
+
+/* JP display in lesson */
+.jp-display {
+  background:var(--bg2); border:1.5px solid var(--border2);
+  border-radius:12px; padding:1.2rem; margin:1rem 0;
+  display:flex; flex-direction:column; gap:0.3rem;
+}
+.jp-main { font-family:'Noto Sans JP',sans-serif; font-size:2rem; font-weight:700; color:var(--ink); }
+.jp-romaji { font-family:'Syne Mono',monospace; font-size:0.85rem; color:var(--red); }
+.jp-fr { font-size:0.95rem; color:var(--ink2); font-style:italic; }
+.jp-note { font-family:'Noto Sans JP',sans-serif; font-size:0.8rem; color:var(--gold); background:var(--gold-soft); border-left:3px solid var(--gold); padding:0.4rem 0.7rem; border-radius:0 6px 6px 0; margin-top:0.3rem; }
+
+.audio-row { display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap; }
+.audio-btn {
+  font-family:'Syne Mono',monospace; font-size:0.72rem;
+  background:var(--ink); color:white; border:none;
+  border-radius:7px; padding:0.45rem 0.9rem; cursor:pointer; transition:opacity 0.2s;
+}
+.audio-btn:hover { opacity:0.8; }
+
+/* Structure breakdown */
+.struct-row { display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.8rem 0; align-items:center; }
+.s-block { padding:0.3rem 0.7rem; border-radius:7px; font-family:'Noto Sans JP',sans-serif; font-size:0.88rem; font-weight:700; }
+.s-subject { background:#dbeafe; color:#1d4ed8; }
+.s-particle { background:#fce7f3; color:#be185d; }
+.s-object { background:#d1fae5; color:#065f46; }
+.s-verb { background:#fee2e2; color:#991b1b; }
+.s-end { background:#f3f4f6; color:#374151; }
+.s-arrow { color:var(--ink3); font-size:0.8rem; }
+
+/* Multiple choice */
+.mcq-opts { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin:1rem 0; }
+@media(max-width:480px) { .mcq-opts { grid-template-columns:1fr; } }
+.mcq-opt {
+  font-family:'Noto Sans JP',sans-serif; font-size:0.9rem;
+  padding:0.8rem 1rem; background:var(--bg2);
+  border:1.5px solid var(--border); border-radius:10px;
+  color:var(--ink); cursor:pointer; transition:all 0.2s; text-align:left;
+}
+.mcq-opt:hover:not(:disabled) { border-color:var(--red); color:var(--red); background:var(--red-soft); }
+.mcq-opt.correct { border-color:var(--green); background:var(--green-soft); color:var(--green); }
+.mcq-opt.wrong { border-color:var(--red); background:var(--red-soft); color:var(--red); }
+
+/* Build sentence */
+.build-words { display:flex; flex-wrap:wrap; gap:0.5rem; margin:0.8rem 0; }
+.build-word {
+  font-family:'Noto Sans JP',sans-serif; font-size:1rem;
+  padding:0.5rem 0.9rem; background:var(--bg2); border:1.5px solid var(--border2);
+  border-radius:8px; cursor:pointer; transition:all 0.2s; color:var(--ink);
+}
+.build-word:hover { border-color:var(--teal); color:var(--teal); transform:translateY(-2px); }
+.build-word.used { opacity:0.25; cursor:default; transform:none; }
+.build-zone {
+  min-height:52px; border:1.5px dashed var(--border2);
+  border-radius:10px; padding:0.7rem; display:flex; flex-wrap:wrap; gap:0.4rem;
+  margin-bottom:0.8rem; background:white;
+}
+.built-word {
+  font-family:'Noto Sans JP',sans-serif; font-size:1rem;
+  padding:0.4rem 0.7rem; background:var(--teal-soft); border:1.5px solid var(--teal);
+  border-radius:7px; cursor:pointer; color:var(--teal); transition:all 0.15s;
+}
+.built-word:hover { background:#ccfbf1; }
+
+/* Feedback */
+.feedback-box {
+  padding:0.8rem 1rem; border-radius:10px; margin:0.8rem 0;
+  font-family:'Noto Sans JP',sans-serif; font-size:0.88rem; line-height:1.6;
+  display:none;
+}
+.feedback-box.ok { background:var(--green-soft); border:1.5px solid #bbf7d0; color:#166534; display:block; }
+.feedback-box.ko { background:var(--red-soft); border:1.5px solid #fecaca; color:#991b1b; display:block; }
+
+/* Phrase du jour */
+.phrase-du-jour {
+  background:linear-gradient(135deg,#1c1917 0%,#292524 100%);
+  border-radius:16px; padding:1.6rem; color:var(--bg); text-align:center;
+  margin:1rem 0;
+}
+.pdj-label { font-family:'Syne Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.14em; color:#a8a29e; margin-bottom:0.8rem; }
+.pdj-jp { font-family:'Noto Sans JP',sans-serif; font-size:2rem; font-weight:700; color:white; margin-bottom:0.4rem; }
+.pdj-romaji { font-family:'Syne Mono',monospace; font-size:0.9rem; color:#f97316; margin-bottom:0.5rem; }
+.pdj-fr { font-size:1rem; font-style:italic; color:#d4c8bc; }
+.pdj-context { font-family:'Noto Sans JP',sans-serif; font-size:0.78rem; color:#78716c; margin-top:0.8rem; line-height:1.6; }
+
+/* Next btn */
+.next-btn {
+  font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem;
+  background:var(--ink); color:white; border:none;
+  border-radius:10px; padding:0.85rem 1.8rem; cursor:pointer;
+  transition:all 0.2s; margin-top:auto; align-self:flex-start;
+}
+.next-btn:hover { background:#292524; transform:translateY(-1px); }
+.next-btn.primary { background:var(--red); }
+.next-btn.primary:hover { background:#b91c1c; box-shadow:0 4px 16px rgba(220,38,38,0.3); }
+
+/* Complete card */
+.complete-card {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:20px; padding:2.5rem; text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.complete-emoji { font-size:3.5rem; margin-bottom:1rem; display:block; }
+.complete-title { font-size:1.8rem; font-weight:800; color:var(--ink); margin-bottom:0.5rem; }
+.complete-sub { font-family:'Noto Sans JP',sans-serif; font-size:0.9rem; color:var(--ink2); line-height:1.7; margin-bottom:1.5rem; }
+.xp-gained { font-family:'Syne Mono',monospace; font-size:1.2rem; color:var(--gold); margin-bottom:1.5rem; }
+.moment-question { background:var(--gold-soft); border:1.5px solid #fed7aa; border-radius:12px; padding:1.2rem; margin-bottom:1.5rem; }
+.mq-title { font-weight:700; font-size:0.9rem; color:var(--gold); margin-bottom:0.8rem; }
+.moment-btns { display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center; }
+.moment-btn {
+  font-family:'Syne Mono',monospace; font-size:0.75rem;
+  background:white; border:1.5px solid var(--border2); color:var(--ink2);
+  border-radius:20px; padding:0.4rem 1rem; cursor:pointer; transition:all 0.2s;
+}
+.moment-btn:hover { border-color:var(--gold); color:var(--gold); }
+.moment-btn.selected { background:var(--gold); color:white; border-color:var(--gold); }
+
+/* AI tutor area */
+.ai-hint-btn {
+  font-family:'Syne Mono',monospace; font-size:0.72rem;
+  background:none; border:1px dashed var(--border2); color:var(--ink3);
+  border-radius:7px; padding:0.35rem 0.8rem; cursor:pointer; transition:all 0.2s;
+  margin-top:0.5rem;
+}
+.ai-hint-btn:hover { border-color:var(--teal); color:var(--teal); }
+.ai-hint-box {
+  background:var(--teal-soft); border:1.5px solid #99f6e4;
+  border-radius:10px; padding:0.9rem; margin-top:0.6rem;
+  font-family:'Noto Sans JP',sans-serif; font-size:0.85rem; color:var(--teal); line-height:1.7;
+  display:none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* Review button */
+.review-btn {
+  width:100%; margin-top:0.7rem;
+  font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem;
+  background:none; color:var(--ink2);
+  border:1.5px dashed var(--border2); border-radius:12px;
+  padding:0.75rem 1.2rem; cursor:pointer; transition:all 0.2s;
+  letter-spacing:-0.01em;
+}
+.review-btn:hover { border-color:var(--gold); color:var(--gold); background:var(--gold-soft); }
+
+/* Review card */
+.review-topic-tag {
+  display:inline-block; font-family:'Syne Mono',monospace; font-size:0.65rem;
+  text-transform:uppercase; letter-spacing:0.1em;
+  background:var(--gold-soft); color:var(--gold); border:1px solid #fed7aa;
+  border-radius:20px; padding:0.2rem 0.7rem; margin-bottom:0.8rem;
+}
+.review-complete {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:20px; padding:2.5rem; text-align:center; box-shadow:var(--shadow-lg);
+}
+.review-score-big {
+  font-size:3rem; font-weight:800; color:var(--ink); line-height:1; margin:0.5rem 0;
+}
+.review-score-label { font-family:'Syne Mono',monospace; font-size:0.75rem; color:var(--ink3); text-transform:uppercase; letter-spacing:0.1em; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-kanji">毎日</span>
+    <span class="logo-text">Mainichi</span>
+    <span class="logo-sub">japonais quotidien</span>
+  </div>
+  <div class="stats">
+    <div class="stat-pill">🔥 <b id="streakVal">0</b> jours</div>
+    <div class="stat-pill">⭐ <b id="xpVal">0</b> XP</div>
+  </div>
+</header>
+
+<main>
+
+<!-- ══ HOME VIEW ══ -->
+<div id="view-home" class="view active">
+
+  <!-- Today card -->
+  <div class="today-card">
+    <div class="today-eyebrow" id="todayEyebrow">Jour 1 · Semaine 1 · Phase 1</div>
+    <h1 class="today-title" id="todayTitle">Prêt pour ta <span>première leçon</span> ?</h1>
+    <p class="today-desc" id="todayDesc">Aujourd'hui tu apprends les premiers sons japonais et comment ils se lisent. 15 minutes, pas plus.</p>
+    <div class="today-meta" id="todayMeta">
+      <span class="meta-tag mt-time">⏱ 15 min</span>
+      <span class="meta-tag mt-phase" id="metaPhase">Phase 1 — Sons</span>
+      <span class="meta-tag mt-moment" id="metaMoment">☀️ Matin conseillé</span>
+    </div>
+    <button class="start-btn" id="startBtn" onclick="startLesson()">
+      <span>Commencer la leçon du jour</span> <span>→</span>
+    </button>
+    <button class="review-btn" id="reviewBtn" onclick="startReview()" style="display:none">
+      🎲 Mode révision — revoir des leçons passées
+    </button>
+  </div>
+
+  <!-- Week view -->
+  <div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:var(--shadow);">
+    <div class="week-title">Cette semaine</div>
+    <div class="week-grid" id="weekGrid"></div>
+  </div>
+
+  <!-- Phases overview -->
+  <div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:1.2rem;box-shadow:var(--shadow);">
+    <div class="phases-title">Ton programme complet</div>
+    <div class="phases-list" id="phasesList"></div>
+  </div>
+
+</div>
+
+<!-- ══ LESSON VIEW ══ -->
+<div id="view-lesson" class="view">
+  <div class="lesson-header">
+    <button class="back-btn" onclick="goHome()">← Accueil</button>
+    <div class="lesson-progress"><div class="lesson-progress-fill" id="lessonProgressFill" style="width:0%"></div></div>
+    <div class="lesson-step-label" id="lessonStepLabel">1/4</div>
+  </div>
+  <div id="stepContainer"></div>
+</div>
+
+<!-- ══ COMPLETE VIEW ══ -->
+<div id="view-complete" class="view">
+  <div class="complete-card">
+    <span class="complete-emoji">🎌</span>
+    <div class="complete-title" id="completeTitle">Leçon terminée !</div>
+    <div class="complete-sub" id="completeSub">Tu avances bien. Reviens demain pour continuer.</div>
+    <div class="xp-gained" id="xpGained">+30 XP gagnés</div>
+
+    <div class="moment-question" id="momentQuestion" style="display:none">
+      <div class="mq-title">🧪 Semaine test — À quel moment étais-tu le plus concentré ?</div>
+      <div class="moment-btns">
+        <button class="moment-btn" onclick="selectMoment(this,'matin')">☀️ Matin</button>
+        <button class="moment-btn" onclick="selectMoment(this,'journée')">🌤 Journée</button>
+        <button class="moment-btn" onclick="selectMoment(this,'soir')">🌙 Soir</button>
+        <button class="moment-btn" onclick="selectMoment(this,'avant dormir')">💤 Avant dormir</button>
+      </div>
+    </div>
+
+    <button class="next-btn primary" onclick="goHome()" style="width:100%;justify-content:center;display:flex;">
+      Retour à l'accueil
+    </button>
+  </div>
+</div>
+
+<!-- ══ REVIEW VIEW ══ -->
+<div id="view-review" class="view">
+  <div class="lesson-header">
+    <button class="back-btn" onclick="goHome()">← Accueil</button>
+    <div class="lesson-progress"><div class="lesson-progress-fill" id="reviewProgressFill" style="width:0%"></div></div>
+    <div class="lesson-step-label" id="reviewStepLabel">Révision</div>
+  </div>
+  <div id="reviewContainer"></div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════
+//  SUPABASE CONFIG
+// ══════════════════════════════
+const SUPABASE_URL = 'https://aeihjztigllecpkcpceg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlaWhqenRpZ2xsZWNwa2NwY2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMjEwNzAsImV4cCI6MjA4OTY5NzA3MH0.ZD4hDd2l54I7RNbJSugD-vkJYBmWVuf8g_rhh9Ogww0';
+
+async function dbLoad() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/progress?id=eq.main`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const rows = await res.json();
+    return rows?.[0] || null;
+  } catch { return null; }
+}
+
+async function dbSave(data) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/progress?id=eq.main`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ ...data, updated_at: new Date().toISOString() })
+    });
+  } catch(e) { console.error('Save error:', e); }
+}
+
+// ══════════════════════════════
+//  DATA & STATE
+// ══════════════════════════════
+let currentDay = 1;
+let streak = 0;
+let xp = 0;
+let completedDays = [];
+let momentLog = [];
+let lastCompleted = null;
+
+const todayStr = new Date().toDateString();
+let todayDone = false;
+
+async function initApp() {
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('startBtn').innerHTML = '<span>Chargement…</span>';
+  const data = await dbLoad();
+  if (data) {
+    currentDay    = data.current_day    ?? 1;
+    streak        = data.streak         ?? 0;
+    xp            = data.xp             ?? 0;
+    completedDays = data.completed_days ?? [];
+    momentLog     = data.moment_log     ?? [];
+    lastCompleted = data.last_completed ?? null;
+  }
+  todayDone = lastCompleted === todayStr;
+  renderHome();
+}
+
+// ══════════════════════════════
+//  PROGRAM STRUCTURE
+// ══════════════════════════════
+const phases = [
+  { name: 'Sons & Hiragana', weeks: '1–4', desc: 'Lire et entendre le japonais correctement', days: 28, color: '#dc2626' },
+  { name: 'Grammaire de base', weeks: '5–8', desc: 'Construire tes propres phrases', days: 28, color: '#b45309' },
+  { name: 'Vocabulaire thématique', weeks: '9–16', desc: 'Parler de la vie quotidienne', days: 56, color: '#0f766e' },
+  { name: 'Conversation & autonomie', weeks: '17–26', desc: 'Dialogues réels, correction, fluidité', days: 70, color: '#7c3aed' },
+];
+
+function getPhaseForDay(d) {
+  let acc = 0;
+  for (let i = 0; i < phases.length; i++) {
+    acc += phases[i].days;
+    if (d <= acc) return i;
+  }
+  return phases.length - 1;
+}
+
+function getMomentForDay(d) {
+  const moments = ['☀️ Matin', '🌤 Journée', '🌙 Soir', '💤 Avant dormir'];
+  return moments[(d - 1) % 4];
+}
+
+// ══════════════════════════════
+//  LESSON CONTENT GENERATION
+// ══════════════════════════════
+
+// All lesson definitions — grows with days
+const lessonDefs = [
+  // DAY 1
+  { day:1, title:'Les sons japonais', desc:'Découverte des voyelles et premiers sons.', steps:[
+    { type:'lesson', eyebrow:'Nouvelle notion', title:'Le japonais se lit phonétiquement',
+      content:`Contrairement au français, le japonais ne contient <strong>aucune exception de prononciation</strong>. Chaque symbole = un son fixe. C'est ta grande chance !<br><br>
+Il y a 3 alphabets : <strong>hiragana</strong> (sons de base), <strong>katakana</strong> (mots étrangers), <strong>kanji</strong> (idéogrammes). Pour l'instant, on se concentre uniquement sur les <strong>5 voyelles</strong>.`,
+      items:[
+        {jp:'あ', romaji:'a', fr:'"a" comme dans "papa"'},
+        {jp:'い', romaji:'i', fr:'"i" comme dans "vie"'},
+        {jp:'う', romaji:'u', fr:'"u" bref, lèvres non arrondies'},
+        {jp:'え', romaji:'e', fr:'"é" comme dans "été"'},
+        {jp:'お', romaji:'o', fr:'"o" comme dans "or"'},
+      ]
+    },
+    { type:'structure', eyebrow:'Comprendre', title:'Pourquoi commencer par les sons ?',
+      content:`En japonais, si tu prononces mal un son, le sens change complètement. Exemples :<br><br>
+<strong>hashi</strong> peut vouloir dire : pont (橋), baguettes (箸) ou bord (端).<br><br>
+La différence est dans la <strong>hauteur</strong> du son (accent tonique). Mais avant ça, maîtriser les voyelles pures est la fondation de tout.`,
+      noJp: true
+    },
+    { type:'mcq', eyebrow:'Exercice', title:'Quel son correspond à い ?',
+      question:'い se prononce…',
+      opts:['u', 'i', 'e', 'a'],
+      answer:'i',
+      explain:'い = "i" pur, comme dans "vie" ou "lit". Court et clair.'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'Ta première phrase japonaise',
+      jp:'はい', romaji:'Hai', fr:'Oui',
+      context:'La syllabe "ha" (は) + "i" (い). Tu viens de lire du hiragana ! Cette phrase tu vas l\'utiliser des dizaines de fois au Japon.'
+    }
+  ]},
+  // DAY 2
+  { day:2, title:'Série K — ka ki ku ke ko', desc:'5 nouveaux sons construits sur les voyelles.', steps:[
+    { type:'lesson', eyebrow:'Nouvelle notion', title:'La série K',
+      content:`Les hiragana sont organisés en <strong>séries de 5</strong>, chacune sur une consonne + les 5 voyelles. La série K est la première à apprendre.`,
+      items:[
+        {jp:'か', romaji:'ka', fr:'"ka"'},
+        {jp:'き', romaji:'ki', fr:'"ki"'},
+        {jp:'く', romaji:'ku', fr:'"ku"'},
+        {jp:'け', romaji:'ke', fr:'"ké"'},
+        {jp:'こ', romaji:'ko', fr:'"ko"'},
+      ]
+    },
+    { type:'structure', eyebrow:'Astuce', title:'La logique des séries',
+      content:`Tu vois le pattern ? <strong>consonne + voyelle</strong> : ka, ki, ku, ke, ko.<br><br>
+Toutes les séries fonctionnent comme ça. Une fois que tu connais les voyelles (a i u e o) et une consonne, tu as <strong>5 nouveaux sons d'un coup</strong>.<br><br>
+Astuce mémo pour こ (ko) : il ressemble à un cœur à moitié dessiné.`,
+      noJp: true
+    },
+    { type:'build', eyebrow:'Exercice', title:'Construis le mot "ici"',
+      target:'ここ', targetRomaji:'koko', targetFr:'ici',
+      words:['こ','こ','か','け'],
+      hint:'こ + こ = koko = ici. On répète le même hiragana deux fois !'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'Phrase pratique',
+      jp:'ここはどこですか？', romaji:'Koko wa doko desu ka?', fr:'Où est-ce, ici ?',
+      context:'"Koko" = ici. "doko" = où. Tu retrouves le "ko" qu\'on vient d\'apprendre. Commence à repérer les sons dans les phrases !'
+    }
+  ]},
+  // DAY 3
+  { day:3, title:'Série S — sa shi su se so', desc:'Attention : "si" devient "shi" en japonais !', steps:[
+    { type:'lesson', eyebrow:'Nouvelle notion', title:'La série S — une exception importante',
+      content:`La série S suit le même principe… sauf pour <strong>"si"</strong> qui devient <strong>"shi"</strong>. C'est la seule exception de cette série.`,
+      items:[
+        {jp:'さ', romaji:'sa', fr:'"sa"'},
+        {jp:'し', romaji:'shi', fr:'"shi" — PAS "si" !'},
+        {jp:'す', romaji:'su', fr:'"su" (le u est presque muet)'},
+        {jp:'せ', romaji:'se', fr:'"sé"'},
+        {jp:'そ', romaji:'so', fr:'"so"'},
+      ]
+    },
+    { type:'structure', eyebrow:'Comprendre', title:'Pourquoi "shi" et pas "si" ?',
+      content:`En japonais ancien, le son "si" n'existait pas. La bouche japonaise "glisse" naturellement vers "shi" sur cette syllabe.<br><br>
+C'est pareil pour la série T : "ti" devient <strong>"chi"</strong> et "tu" devient <strong>"tsu"</strong>. Ces "exceptions" sont en réalité les sons naturels de la langue.<br><br>
+Bonus : <strong>すし</strong> (sushi) — tu viens de lire un mot que tu connais déjà !`,
+      noJp: true
+    },
+    { type:'mcq', eyebrow:'Exercice', title:'Comment lit-on し ?',
+      question:'し se prononce…',
+      opts:['si', 'shi', 'chi', 'su'],
+      answer:'shi',
+      explain:'"shi" — la bouche japonaise ne fait pas le son "si". Pense à "sheep" en anglais.'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'Un mot que tu connais déjà !',
+      jp:'すし', romaji:'Sushi', fr:'Sushi',
+      context:'す (su) + し (shi) = すし. Félicitations, tu viens de lire ton premier mot japonais en hiragana ! Le u de "su" est très bref au Japon.'
+    }
+  ]},
+  // DAY 4 — first grammar
+  { day:4, title:'La particule は (wa)', desc:'Le secret du japonais : les petits mots qui organisent tout.', steps:[
+    { type:'lesson', eyebrow:'Nouvelle notion — Grammaire', title:'Les particules : le cœur du japonais',
+      content:`En japonais, les <strong>particules</strong> sont de petits mots qui indiquent le rôle de chaque élément dans la phrase. C'est la différence fondamentale avec le français.<br><br>
+La particule <strong>は</strong> (wa) marque le <strong>thème</strong> de la phrase — ce dont on parle.`,
+      items:[
+        {jp:'[thème] は [commentaire]', romaji:'[thème] wa [commentaire]', fr:'En ce qui concerne [thème], [commentaire]'},
+      ]
+    },
+    { type:'structure', eyebrow:'Comprendre', title:'は se lit "wa" et non "ha"',
+      content:`Quand は est utilisée comme <strong>particule</strong>, elle se lit <strong>"wa"</strong> (pas "ha"). C'est une règle historique.<br><br>
+Exemples de la structure :<br><br>
+<strong>私は</strong> (watashi wa) = en ce qui me concerne / "moi"<br>
+<strong>これは</strong> (kore wa) = en ce qui concerne ceci<br><br>
+Tu n'as pas besoin de comprendre pourquoi. Juste de reconnaître le pattern : <strong>mot + は + description</strong>.`,
+      noJp: true
+    },
+    { type:'build', eyebrow:'Exercice', title:'Construis "Je suis français"',
+      target:'私はフランス人です', targetRomaji:'Watashi wa furansujin desu', targetFr:'Je suis français(e)',
+      words:['私は','フランス人','です','か'],
+      hint:'"Watashi wa" (moi) + "furansujin" (français) + "desu" (suis/est). L\'ordre : thème → description.'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'La phrase de présentation',
+      jp:'私は[名前]です', romaji:'Watashi wa [namae] desu', fr:'Je suis [prénom]',
+      context:'Remplace [名前] par ton prénom. "Watashi" = je/moi. "desu" = suis/est/sont (très poli). Structure : Sujet + は + identité + です.'
+    }
+  ]},
+  // DAY 5 — review day
+  { day:5, title:'Révision + premiers mots', desc:'Consolider les sons appris et apprendre 5 mots clés.', steps:[
+    { type:'lesson', eyebrow:'Révision', title:'Les sons de la semaine',
+      content:`Rappel rapide de ce qu'on a vu. Chaque son en japonais est une syllabe complète.`,
+      items:[
+        {jp:'あいうえお', romaji:'a-i-u-e-o', fr:'Les 5 voyelles'},
+        {jp:'かきくけこ', romaji:'ka-ki-ku-ke-ko', fr:'Série K'},
+        {jp:'さしすせそ', romaji:'sa-shi-su-se-so', fr:'Série S (shi !)'},
+        {jp:'は → wa', romaji:'(particule)', fr:'Marque le thème'},
+      ]
+    },
+    { type:'lesson', eyebrow:'Vocabulaire', title:'5 mots pour survivre',
+      content:`Ces 5 mots sont les plus utiles de toute la langue. Apprends-les comme des réflexes.`,
+      items:[
+        {jp:'はい / いいえ', romaji:'hai / iie', fr:'Oui / Non'},
+        {jp:'すみません', romaji:'sumimasen', fr:'Excusez-moi / Pardon'},
+        {jp:'ありがとう', romaji:'arigatou', fr:'Merci'},
+        {jp:'これ', romaji:'kore', fr:'Ceci (en montrant)'},
+        {jp:'どこ', romaji:'doko', fr:'Où ?'},
+      ]
+    },
+    { type:'mcq', eyebrow:'Quiz révision', title:'Que signifie すみません ?',
+      question:'すみません veut dire…',
+      opts:['Merci', 'Excusez-moi', 'Oui', 'Au revoir'],
+      answer:'Excusez-moi',
+      explain:'すみません (sumimasen) = excusez-moi. Mais aussi : attirer l\'attention d\'un serveur, passer devant quelqu\'un, remercier légèrement.'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'La phrase couteau-suisse',
+      jp:'すみません、これをください', romaji:'Sumimasen, kore wo kudasai', fr:'Excusez-moi, je voudrais ceci',
+      context:'"Sumimasen" (excusez-moi) + "kore wo" (ceci + particule objet) + "kudasai" (s\'il vous plaît). Avec cette phrase et un doigt pointé, tu peux acheter n\'importe quoi au Japon.'
+    }
+  ]},
+  // DAY 6
+  { day:6, title:'Série T — ta chi tsu te to', desc:'Deux sons surprenants : "ti" → "chi" et "tu" → "tsu".', steps:[
+    { type:'lesson', eyebrow:'Nouvelle notion', title:'La série T',
+      content:`Comme la série S avait "shi", la série T a deux surprises : <strong>"ti" → "chi"</strong> et <strong>"tu" → "tsu"</strong>.`,
+      items:[
+        {jp:'た', romaji:'ta', fr:'"ta"'},
+        {jp:'ち', romaji:'chi', fr:'"chi" — PAS "ti"'},
+        {jp:'つ', romaji:'tsu', fr:'"tsu" — son unique au japonais !'},
+        {jp:'て', romaji:'te', fr:'"té"'},
+        {jp:'と', romaji:'to', fr:'"to"'},
+      ]
+    },
+    { type:'structure', eyebrow:'Astuce', title:'Maîtriser "tsu"',
+      content:`"tsu" est un son qui n'existe pas en français. C'est comme si tu disais "ts" (comme dans "tsar") suivi d'un "u" bref.<br><br>
+Exemples de mots que tu connais déjà :<br>
+<strong>てんぷら</strong> (tenpura) = tempura<br>
+<strong>さつまいも</strong> = patate douce<br><br>
+Conseil : chante "tsa tsi tsu tse tso" à voix haute plusieurs fois. Le son vient naturellement.`,
+      noJp: true
+    },
+    { type:'mcq', eyebrow:'Exercice', title:'Comment lit-on つ ?',
+      question:'つ se lit…',
+      opts:['tu', 'tsu', 'chi', 'su'],
+      answer:'tsu',
+      explain:'"tsu" — un son unique. Pense à "pizza" en italien ou "tsar" en français.'
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'La météo',
+      jp:'今日はとても寒いです', romaji:'Kyou wa totemo samui desu', fr:'Aujourd\'hui il fait très froid',
+      context:'"Kyou" = aujourd\'hui. "totemo" = très. "samui" = froid. Structure : [thème] は [adjectif] です — le même pattern qu\'on a appris !'
+    }
+  ]},
+  // DAY 7 — week end check-in
+  { day:7, title:'Bilan de semaine 1', desc:'Révision complète + bilan de ton meilleur moment d\'apprentissage.', steps:[
+    { type:'lesson', eyebrow:'Bilan semaine 1', title:'Ce que tu as appris',
+      content:`En 7 jours, tu as posé des fondations solides :`,
+      items:[
+        {jp:'あいうえお', romaji:'a i u e o', fr:'5 voyelles'},
+        {jp:'か〜こ', romaji:'ka ki ku ke ko', fr:'Série K'},
+        {jp:'さ〜そ', romaji:'sa shi su se so', fr:'Série S'},
+        {jp:'た〜と', romaji:'ta chi tsu te to', fr:'Série T'},
+        {jp:'は (wa)', romaji:'particule thème', fr:'Structure de base'},
+      ]
+    },
+    { type:'mcq', eyebrow:'Quiz bilan', title:'Que veut dire この (kono) ?',
+      question:'この veut dire…',
+      opts:['Bonjour', 'Ce / cet / cette', 'Merci', 'Où'],
+      answer:'Ce / cet / cette',
+      explain:'"kono" = ce/cet/cette — démonstratif qui précède un nom. Ex: "kono sushi" = ce sushi. Tu retrouves "ko" de la série K !'
+    },
+    { type:'structure', eyebrow:'Méthode', title:'Comment mémoriser sans oublier',
+      content:`Tu as peut-être remarqué que certains hiragana s'effacent vite. C'est normal — c'est la <strong>courbe de l'oubli</strong> de Ebbinghaus.<br><br>
+La solution : la <strong>répétition espacée</strong>. Revoir une notion :<br>
+→ 1 jour après<br>
+→ 3 jours après<br>
+→ 7 jours après<br><br>
+C'est exactement ce que fait ce programme. Chaque semaine contient des révisions des notions précédentes. Tu n'as rien à organiser toi-même.`,
+      noJp: true
+    },
+    { type:'phrase', eyebrow:'Phrase du jour', title:'La phrase de la semaine',
+      jp:'日本語が少し話せます', romaji:'Nihongo ga sukoshi hanasemasu', fr:'Je parle un peu japonais',
+      context:'Dis ça avec un sourire au Japon et tu vas créer une connexion immédiate. "Nihongo" = japonais. "sukoshi" = un peu. "hanasemasu" = je peux parler.'
+    }
+  ]},
+];
+
+// Ordered curriculum for days 8+
+const curriculum = [
+  { title:'Série N — na ni nu ne no', desc:'Cinq nouveaux sons doux' },
+  { title:'Série H — ha hi fu he ho', desc:'Le mystérieux son "fu"' },
+  { title:'Série M — ma mi mu me mo', desc:'La série la plus facile' },
+  { title:'Série Y et W — ya yu yo / wa wo', desc:'Sons spéciaux et particule を' },
+  { title:'La particule を (wo)', desc:'Marquer ce sur quoi porte l\'action' },
+  { title:'La particule に (ni)', desc:'Vers, à, dans — les destinations' },
+  { title:'La particule で (de)', desc:'Le lieu où se déroule l\'action' },
+  { title:'La particule も (mo)', desc:'"Aussi" — ajouter des éléments' },
+  { title:'Verbes — forme polie en ます', desc:'Construire des actions au présent/futur' },
+  { title:'Les nombres 1 à 10', desc:'Compter, payer, commander' },
+  { title:'Les nombres 10 à 100', desc:'Prix, âge, distances' },
+  { title:'Les adjectifs en い', desc:'"Oishii", "samui", "kawaii" — ils se conjuguent !' },
+  { title:'Les adjectifs en な', desc:'Un deuxième type d\'adjectifs' },
+  { title:'Questions avec か', desc:'Transformer n\'importe quelle phrase en question' },
+  { title:'Questions avec なに / だれ / いつ', desc:'Quoi, qui, quand' },
+  { title:'Indiquer l\'heure', desc:'Demander et dire quelle heure il est' },
+  { title:'Les jours de la semaine', desc:'Du lundi au dimanche en japonais' },
+  { title:'Aller quelque part — verb 行く (iku)', desc:'Se déplacer en japonais' },
+  { title:'Manger et boire — 食べる / 飲む', desc:'Les verbes essentiels du quotidien' },
+  { title:'Vouloir — ～たい (tai)', desc:'Exprimer ses envies' },
+  { title:'Pouvoir — ～できる (dekiru)', desc:'Parler de ses capacités' },
+  { title:'La forme négative', desc:'Dire ce qu\'on ne fait pas / n\'a pas' },
+  { title:'Le passé poli — ました (mashita)', desc:'Parler de ce qu\'on a fait' },
+  { title:'Demander poliment — ～ください', desc:'Formuler des demandes sans impolitesse' },
+  { title:'Révision générale — Semaine 4', desc:'Consolider tout ce qu\'on a appris' },
+];
+
+function getLessonForDay(d) {
+  const def = lessonDefs.find(l => l.day === d);
+  if (def) return def;
+  const idx = (d - 8) % curriculum.length;
+  const topic = curriculum[idx];
+  return { day: d, title: topic.title, desc: topic.desc, aiGenerated: true, steps: [] };
+}
+
+// ── AI LESSON GENERATION ──
+async function generateAndStartLesson(day) {
+  const lessonMeta = getLessonForDay(day);
+  const phaseIdx = getPhaseForDay(day);
+  const phaseName = phases[phaseIdx].name;
+
+  // Show loading screen
+  showView('lesson');
+  document.getElementById('lessonProgressFill').style.width = '0%';
+  document.getElementById('lessonStepLabel').textContent = '…';
+  document.getElementById('stepContainer').innerHTML = `
+    <div class="step-card" style="align-items:center;justify-content:center;text-align:center;gap:1.2rem">
+      <div style="font-size:2.5rem">⏳</div>
+      <div class="step-title">Ton Sensei prépare la leçon…</div>
+      <div style="font-family:'Syne Mono',monospace;font-size:0.8rem;color:var(--ink3)">
+        Génération de : <strong style="color:var(--red)">${lessonMeta.title}</strong>
+      </div>
+      <div style="width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:0.5rem">
+        <div style="height:100%;background:var(--red);border-radius:2px;animation:loadingBar 2s ease-in-out infinite"></div>
+      </div>
+    </div>
+    <style>@keyframes loadingBar{0%{width:0%}50%{width:70%}100%{width:95%}}</style>
+  `;
+
+  const completedTopics = [];
+  for (let i = 1; i < day; i++) {
+    const l = lessonDefs.find(x => x.day === i);
+    if (l) completedTopics.push(l.title);
+    else {
+      const ci = (i - 8) % curriculum.length;
+      if (ci >= 0) completedTopics.push(curriculum[ci].title);
+    }
+  }
+
+  const prompt = `Tu es Sensei, professeur de japonais pour un touriste francophone débutant préparant un voyage au Japon.
+
+Contexte apprenant :
+- Jour ${day} du programme (Phase : ${phaseName})
+- Notions déjà vues : ${completedTopics.slice(-10).join(', ')}
+- Sujet d'aujourd'hui : "${lessonMeta.title}"
+
+Génère une leçon complète de 15 minutes en JSON strict (sans markdown, sans backticks, juste le JSON brut).
+
+Format EXACT à respecter :
+{
+  "title": "titre court de la leçon",
+  "desc": "une ligne de description",
+  "steps": [
+    {
+      "type": "lesson",
+      "eyebrow": "Nouvelle notion",
+      "title": "titre accrocheur",
+      "content": "Explication en HTML simple (balises <strong>, <br> autorisées). 3-5 phrases max. Clair, concret, avec des astuces mnémotechniques.",
+      "items": [
+        {"jp": "texte japonais", "romaji": "romanisation", "fr": "traduction française"}
+      ]
+    },
+    {
+      "type": "structure",
+      "eyebrow": "Comprendre",
+      "title": "titre",
+      "content": "Explication approfondie en HTML. Pourquoi ça fonctionne comme ça, contexte culturel, pièges à éviter."
+    },
+    {
+      "type": "mcq",
+      "eyebrow": "Exercice",
+      "title": "Question courte",
+      "question": "La question posée à l'élève",
+      "opts": ["option1", "option2", "option3", "option4"],
+      "answer": "la bonne réponse (doit être identique à l'une des opts)",
+      "explain": "Explication courte de la bonne réponse"
+    },
+    {
+      "type": "phrase",
+      "eyebrow": "Phrase du jour",
+      "title": "Titre descriptif",
+      "jp": "phrase en japonais",
+      "romaji": "romanisation",
+      "fr": "traduction",
+      "context": "Explication du contexte d'utilisation au Japon, astuces pratiques pour touriste"
+    }
+  ]
+}
+
+Règles importantes :
+- Exactement 4 steps dans cet ordre : lesson, structure, mcq, phrase
+- Le champ "items" dans lesson : 3 à 5 exemples pertinents pour le sujet
+- Le QCM doit tester la notion du jour, pas une révision générique
+- La phrase du jour doit utiliser la notion du jour dans un contexte touristique réel
+- Réponds UNIQUEMENT avec le JSON, rien d'autre`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'Tu es un générateur de contenu pédagogique. Tu réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans aucun texte avant ou après le JSON.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const generated = JSON.parse(clean);
+
+    activeLesson = { day, ...generated, aiGenerated: true };
+    activeStepIdx = 0;
+    lessonXP = 0;
+    builtSentence = [];
+    renderStep();
+
+  } catch(e) {
+    // Fallback si erreur réseau ou parse
+    document.getElementById('stepContainer').innerHTML = `
+      <div class="step-card" style="align-items:center;text-align:center;gap:1rem">
+        <div style="font-size:2rem">⚠️</div>
+        <div class="step-title">Impossible de générer la leçon</div>
+        <div style="font-family:'Syne Mono',monospace;font-size:0.8rem;color:var(--ink3)">Vérifie ta connexion internet et réessaie.</div>
+        <button class="next-btn primary" style="margin-top:1rem" onclick="generateAndStartLesson(${day})">Réessayer</button>
+        <button class="next-btn" onclick="goHome()">Retour</button>
+      </div>`;
+  }
+}
+
+// ══════════════════════════════
+//  LESSON ENGINE
+// ══════════════════════════════
+let activeLesson = null;
+let activeStepIdx = 0;
+let builtSentence = [];
+let lessonXP = 0;
+
+function startLesson() {
+  if (todayDone) return;
+  const meta = getLessonForDay(currentDay);
+  if (meta.aiGenerated) {
+    generateAndStartLesson(currentDay);
+  } else {
+    activeLesson = meta;
+    activeStepIdx = 0;
+    lessonXP = 0;
+    builtSentence = [];
+    showView("lesson");
+    renderStep();
+  }
+}
+
+function renderStep() {
+  const steps = activeLesson.steps;
+  const pct = (activeStepIdx / steps.length) * 100;
+  document.getElementById('lessonProgressFill').style.width = pct + '%';
+  document.getElementById('lessonStepLabel').textContent = `${activeStepIdx + 1}/${steps.length}`;
+
+  const step = steps[activeStepIdx];
+  let html = '';
+
+  if (step.type === 'lesson') {
+    html = `
+      <div class="step-card">
+        <div class="step-eyebrow ey-${step.eyebrow.includes('Révi') ? 'review' : 'lesson'}">${step.eyebrow}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-body">
+          ${step.content}
+          ${(step.items||[]).map(it => `
+            <div class="jp-display">
+              <div class="jp-main">${it.jp}</div>
+              <div class="jp-romaji">${it.romaji}</div>
+              <div class="jp-fr">${it.fr}</div>
+            </div>
+            <div class="audio-row"><button class="audio-btn" onclick="speak('${it.jp.replace(/'/g,"\\'")}')">🔊 Écouter</button></div>
+          `).join('')}
+        </div>
+        <button class="next-btn primary" style="margin-top:1.5rem" onclick="nextStep()">Compris →</button>
+      </div>`;
+  }
+
+  else if (step.type === 'structure') {
+    html = `
+      <div class="step-card">
+        <div class="step-eyebrow ey-review">${step.eyebrow}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-body">${step.content}</div>
+        <button class="ai-hint-btn" onclick="fetchAIHint(${activeStepIdx})">🤖 Approfondir avec Sensei IA</button>
+        <div class="ai-hint-box" id="aiHint-${activeStepIdx}"></div>
+        <button class="next-btn primary" style="margin-top:1.5rem" onclick="nextStep()">Suivant →</button>
+      </div>`;
+  }
+
+  else if (step.type === 'mcq') {
+    html = `
+      <div class="step-card">
+        <div class="step-eyebrow ey-practice">${step.eyebrow}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-body">
+          <p style="margin-bottom:0.8rem;font-family:'Noto Sans JP',sans-serif">${step.question}</p>
+          <div class="mcq-opts" id="mcqOpts">
+            ${step.opts.map((o,oi) => `<button class="mcq-opt" data-idx="${oi}" onclick="answerMCQByIdx(this,${oi})">${o}</button>`).join('')}
+          </div>
+          <div class="feedback-box" id="mcqFeedback"></div>
+        </div>
+        <button class="next-btn primary" id="mcqNext" style="display:none;margin-top:1rem" onclick="nextStep()">Continuer →</button>
+      </div>`;
+  }
+
+  else if (step.type === 'build') {
+    builtSentence = [];
+    html = `
+      <div class="step-card">
+        <div class="step-eyebrow ey-practice">${step.eyebrow}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-body">
+          <p style="margin-bottom:0.8rem;font-family:'Noto Sans JP',sans-serif;color:var(--ink2)">Construis la phrase en cliquant sur les blocs dans le bon ordre :</p>
+          <p style="font-family:'Syne Mono',monospace;font-size:0.8rem;color:var(--red);margin-bottom:0.6rem">→ ${step.targetFr}</p>
+          <div class="build-zone" id="buildZone"></div>
+          <div class="build-words" id="buildWords">
+            ${step.words.map((w,i)=>`<div class="build-word" id="bw-${i}" data-word="${i}" onclick="addWord(${i})">${w}</div>`).join('')}
+          </div>
+          <div class="feedback-box" id="buildFeedback"></div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap">
+            <button class="next-btn" onclick="resetBuild()">↺ Réinitialiser</button>
+            <button class="next-btn primary" id="buildCheck" onclick="checkBuild()">Vérifier ✓</button>
+          </div>
+        </div>
+        <button class="next-btn primary" id="buildNext" style="display:none;margin-top:1rem" onclick="nextStep()">Continuer →</button>
+      </div>`;
+  }
+
+  else if (step.type === 'phrase') {
+    html = `
+      <div class="step-card">
+        <div class="step-eyebrow ey-phrase">${step.eyebrow}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-body">
+          <div class="phrase-du-jour">
+            <div class="pdj-label">Phrase du jour</div>
+            <div class="pdj-jp">${step.jp}</div>
+            <div class="pdj-romaji">${step.romaji}</div>
+            <div class="pdj-fr">${step.fr}</div>
+            <div class="pdj-context">${step.context}</div>
+          </div>
+          <div class="audio-row" style="justify-content:center;margin-top:0.8rem">
+            <button class="audio-btn" onclick="speak('${step.jp.replace(/'/g,"\\'")}')">🔊 Écouter la prononciation</button>
+          </div>
+        </div>
+        <button class="next-btn primary" style="margin-top:1.5rem" onclick="completeLesson()">Terminer la leçon 🎌</button>
+      </div>`;
+  }
+
+  document.getElementById('stepContainer').innerHTML = html;
+}
+
+function nextStep() {
+  activeStepIdx++;
+  lessonXP += 8;
+  if (activeStepIdx >= activeLesson.steps.length) { completeLesson(); return; }
+  renderStep();
+}
+
+function answerMCQByIdx(btn, optIdx) {
+  const step = activeLesson.steps[activeStepIdx];
+  const chosen = step.opts[optIdx];
+  const correct = step.answer;
+  const explain = step.explain;
+  document.querySelectorAll('.mcq-opt').forEach(b => b.disabled = true);
+  const fb = document.getElementById('mcqFeedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ ' + explain;
+    lessonXP += 10;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.mcq-opt').forEach(b => {
+      if (b.textContent.trim() === correct) b.classList.add('correct');
+    });
+    fb.className = 'feedback-box ko';
+    fb.textContent = '❌ ' + explain;
+    lessonXP += 3;
+  }
+  document.getElementById('mcqNext').style.display = 'inline-flex';
+}
+
+function addWord(idx) {
+  const step = activeLesson.steps[activeStepIdx];
+  const w = step.words[idx];
+  const el = document.getElementById('bw-'+idx);
+  if (el.classList.contains('used')) return;
+  el.classList.add('used');
+  builtSentence.push({w, idx});
+  const zone = document.getElementById('buildZone');
+  const span = document.createElement('div');
+  span.className = 'built-word';
+  span.textContent = w;
+  span.onclick = () => removeWord(span, idx);
+  zone.appendChild(span);
+}
+
+function removeWord(span, idx) {
+  span.remove();
+  builtSentence = builtSentence.filter(x => x.idx !== idx);
+  const el = document.getElementById('bw-'+idx);
+  if(el) el.classList.remove('used');
+}
+
+function resetBuild() {
+  builtSentence = [];
+  document.getElementById('buildZone').innerHTML = '';
+  document.querySelectorAll('.build-word').forEach(b => b.classList.remove('used'));
+  const fb = document.getElementById('buildFeedback');
+  if(fb) { fb.className='feedback-box'; fb.textContent=''; }
+}
+
+function checkBuild() {
+  const step = activeLesson.steps[activeStepIdx];
+  const built = builtSentence.map(x=>x.w).join('');
+  const fb = document.getElementById('buildFeedback');
+  if (built === step.target) {
+    fb.className = 'feedback-box ok';
+    fb.innerHTML = `✅ Parfait ! <strong>${step.target}</strong> (${step.targetRomaji}) = ${step.targetFr}`;
+    document.getElementById('buildNext').style.display = 'inline-flex';
+    lessonXP += 15;
+  } else {
+    fb.className = 'feedback-box ko';
+    fb.innerHTML = `❌ Pas tout à fait. Indice : ${step.hint}`;
+  }
+}
+
+function completeLesson() {
+  lessonXP += 5;
+  xp += lessonXP;
+  if (!todayDone) streak++;
+  if (!completedDays.includes(currentDay)) completedDays.push(currentDay);
+  lastCompleted = todayStr;
+  todayDone = true;
+  const nextDay = currentDay + 1;
+
+  dbSave({
+    current_day: nextDay,
+    streak: streak,
+    xp: xp,
+    completed_days: completedDays,
+    moment_log: momentLog,
+    last_completed: lastCompleted
+  });
+
+  document.getElementById('xpVal').textContent = xp;
+  document.getElementById('streakVal').textContent = streak;
+  document.getElementById('completeTitle').textContent = `Leçon ${currentDay} terminée !`;
+  document.getElementById('completeSub').textContent = `Tu as étudié "${activeLesson.title}". Reviens demain pour continuer ta progression.`;
+  document.getElementById('xpGained').textContent = `+${lessonXP} XP gagnés — Total : ${xp} XP`;
+
+  if (currentDay <= 7) {
+    document.getElementById('momentQuestion').style.display = 'block';
+  }
+
+  currentDay = nextDay;
+  showView('complete');
+}
+
+function selectMoment(btn, moment) {
+  document.querySelectorAll('.moment-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  momentLog.push({day: currentDay-1, moment});
+  dbSave({ moment_log: momentLog });
+
+  // After 7 days, show recommendation
+  if (momentLog.length >= 7) {
+    const counts = {};
+    momentLog.forEach(m => { counts[m.moment] = (counts[m.moment]||0)+1; });
+    const best = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+    document.getElementById('completeSub').textContent = `🎯 Analyse de ta semaine : tu es le plus concentré le ${best}. Continue à ce moment-là pour maximiser ta mémorisation !`;
+  }
+}
+
+async function fetchAIHint(idx) {
+  const step = activeLesson.steps[idx];
+  const box = document.getElementById('aiHint-'+idx);
+  box.style.display = 'block';
+  box.textContent = 'Sensei réfléchit…';
+  try {
+    const res = await fetch('/api/sensei', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:300,
+        system:`Tu es Sensei, prof de japonais pour touriste francophone débutant. Réponses courtes (max 80 mots), en français, avec 1-2 exemples en japonais (romaji). Ton : chaleureux, clair, pédagogue.`,
+        messages:[{role:'user', content:`Explique de façon simple et mémorable : "${step.title}". Contexte : ${step.content.replace(/<[^>]+>/g,'').slice(0,200)}`}]
+      })
+    });
+    const d = await res.json();
+    box.textContent = d.content?.[0]?.text || 'Erreur de connexion.';
+  } catch { box.textContent = 'Connexion indisponible.'; }
+}
+
+// ══════════════════════════════
+//  REVIEW MODE
+// ══════════════════════════════
+let reviewQuestions = [];
+let reviewIdx = 0;
+let reviewCorrect = 0;
+
+async function startReview() {
+  // Pick 3 random past days
+  const done = completedDays.filter(d => d < currentDay);
+  if (done.length === 0) { alert('Termine au moins une leçon pour accéder aux révisions !'); return; }
+  const picked = done.sort(() => Math.random() - 0.5).slice(0, Math.min(3, done.length));
+  const topicNames = picked.map(d => {
+    const l = lessonDefs.find(x => x.day === d);
+    if (l) return l.title;
+    const ci = (d - 8) % curriculum.length;
+    return ci >= 0 ? curriculum[ci].title : 'Notions de base';
+  });
+
+  showView('review');
+  document.getElementById('reviewProgressFill').style.width = '0%';
+  document.getElementById('reviewStepLabel').textContent = '…';
+  document.getElementById('reviewContainer').innerHTML = `
+    <div class="step-card" style="align-items:center;justify-content:center;text-align:center;gap:1.2rem">
+      <div style="font-size:2.5rem">🎲</div>
+      <div class="step-title">Sensei prépare ta révision…</div>
+      <div style="font-family:'Syne Mono',monospace;font-size:0.78rem;color:var(--ink3);line-height:1.8">
+        Sujets piochés :<br>
+        ${topicNames.map(t => `<strong style="color:var(--red)">${t}</strong>`).join('<br>')}
+      </div>
+      <div style="width:200px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:0.5rem">
+        <div style="height:100%;background:var(--gold);border-radius:2px;animation:loadingBar 2.5s ease-in-out infinite"></div>
+      </div>
+    </div>`;
+
+  const prompt = `Tu es Sensei, professeur de japonais pour un touriste francophone débutant.
+
+L'élève a déjà étudié ces leçons : ${topicNames.join(', ')}.
+
+Génère exactement 5 questions de révision variées sur ces sujets, en JSON strict (sans markdown, sans backticks).
+
+Format EXACT :
+{
+  "questions": [
+    {
+      "topic": "nom court du sujet testé",
+      "jp": "mot ou phrase en japonais (peut être vide si question sur romaji)",
+      "question": "La question posée",
+      "opts": ["option1", "option2", "option3", "option4"],
+      "answer": "la bonne réponse (identique à une des opts)",
+      "explain": "Explication courte et mémorable de la bonne réponse"
+    }
+  ]
+}
+
+Règles :
+- Varie les types : traduction JP→FR, FR→JP, romaji, sens d'une particule, grammaire
+- Questions concrètes et utiles pour un touriste
+- Difficulté progressive : 2 faciles, 2 moyennes, 1 difficile
+- Réponds UNIQUEMENT avec le JSON`;
+
+  try {
+    const res = await fetch('/api/sensei', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        system: 'Tu génères uniquement du JSON valide, sans markdown, sans backticks, sans texte autour.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    reviewQuestions = parsed.questions;
+    reviewIdx = 0;
+    reviewCorrect = 0;
+    renderReviewQ();
+  } catch(e) {
+    document.getElementById('reviewContainer').innerHTML = `
+      <div class="step-card" style="align-items:center;text-align:center;gap:1rem">
+        <div style="font-size:2rem">⚠️</div>
+        <div class="step-title">Connexion impossible</div>
+        <button class="next-btn primary" style="margin-top:1rem" onclick="startReview()">Réessayer</button>
+        <button class="next-btn" onclick="goHome()">Retour</button>
+      </div>`;
+  }
+}
+
+function renderReviewQ() {
+  if (reviewIdx >= reviewQuestions.length) {
+    const pct = Math.round((reviewCorrect / reviewQuestions.length) * 100);
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+    const msg = pct >= 80 ? 'Excellent ! Tu maîtrises bien ces notions.' : pct >= 60 ? 'Bien ! Quelques points à consolider.' : 'Continue à pratiquer — ça vient !';
+    document.getElementById('reviewContainer').innerHTML = `
+      <div class="review-complete">
+        <div style="font-size:3rem;margin-bottom:0.5rem">${emoji}</div>
+        <div class="review-score-label">Score final</div>
+        <div class="review-score-big">${reviewCorrect}/${reviewQuestions.length}</div>
+        <div style="font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;color:var(--ink2);margin:0.8rem 0 1.5rem;line-height:1.7">${msg}</div>
+        <div style="display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap">
+          <button class="next-btn primary" onclick="startReview()">🎲 Nouvelle révision</button>
+          <button class="next-btn" onclick="goHome()">Retour à l'accueil</button>
+        </div>
+      </div>`;
+    addXP(reviewCorrect * 3);
+    document.getElementById('reviewProgressFill').style.width = '100%';
+    return;
+  }
+
+  const q = reviewQuestions[reviewIdx];
+  const pct = (reviewIdx / reviewQuestions.length) * 100;
+  document.getElementById('reviewProgressFill').style.width = pct + '%';
+  document.getElementById('reviewStepLabel').textContent = `${reviewIdx + 1} / ${reviewQuestions.length}`;
+
+  document.getElementById('reviewContainer').innerHTML = `
+    <div class="step-card">
+      <span class="review-topic-tag">🎲 ${q.topic}</span>
+      ${q.jp ? `<div style="font-family:'Noto Sans JP',sans-serif;font-size:2rem;font-weight:700;color:var(--red);margin-bottom:0.8rem">${q.jp}</div>` : ''}
+      <div class="step-title" style="font-size:1.1rem">${q.question}</div>
+      <div class="mcq-opts" style="margin-top:1rem" id="reviewOpts">
+        ${q.opts.map((o, i) => `<button class="mcq-opt" data-idx="${i}" onclick="answerReview(this,${i})">${o}</button>`).join('')}
+      </div>
+      <div class="feedback-box" id="reviewFeedback"></div>
+      <button class="next-btn primary" id="reviewNext" style="display:none;margin-top:1rem" onclick="nextReviewQ()">
+        ${reviewIdx < reviewQuestions.length - 1 ? 'Question suivante →' : 'Voir mon score →'}
+      </button>
+    </div>`;
+}
+
+function answerReview(btn, optIdx) {
+  const q = reviewQuestions[reviewIdx];
+  const chosen = q.opts[optIdx];
+  document.querySelectorAll('#reviewOpts .mcq-opt').forEach(b => b.disabled = true);
+  const fb = document.getElementById('reviewFeedback');
+  if (chosen === q.answer) {
+    btn.classList.add('correct');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ ' + q.explain;
+    reviewCorrect++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('#reviewOpts .mcq-opt').forEach(b => {
+      if (b.textContent.trim() === q.answer) b.classList.add('correct');
+    });
+    fb.className = 'feedback-box ko';
+    fb.textContent = '❌ ' + q.explain;
+  }
+  document.getElementById('reviewNext').style.display = 'inline-flex';
+}
+
+function nextReviewQ() { reviewIdx++; renderReviewQ(); }
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+}
+
+function goHome() {
+  showView('home');
+  renderHome();
+}
+
+function renderHome() {
+  // Update stats
+  document.getElementById('xpVal').textContent = xp;
+  document.getElementById('streakVal').textContent = streak;
+
+  const lesson = getLessonForDay(currentDay);
+  const phaseIdx = getPhaseForDay(currentDay);
+  const weekNum = Math.ceil(currentDay / 7);
+
+  document.getElementById('todayEyebrow').textContent = `Jour ${currentDay} · Semaine ${weekNum} · ${phases[phaseIdx].name}`;
+  document.getElementById('todayTitle').innerHTML = `${todayDone ? 'Leçon du jour <span>complétée !</span>' : `Prêt pour la leçon <span>du jour ${currentDay}</span> ?`}`;
+  document.getElementById('todayDesc').textContent = lesson.desc;
+  document.getElementById('metaPhase').textContent = `Phase ${phaseIdx+1} — ${phases[phaseIdx].name}`;
+  document.getElementById('metaMoment').textContent = getMomentForDay(currentDay);
+
+  const btn = document.getElementById('startBtn');
+  const reviewBtn = document.getElementById('reviewBtn');
+  btn.disabled = todayDone;
+  btn.innerHTML = todayDone ? '<span>✅ Terminée pour aujourd\'hui</span>' : '<span>Commencer la leçon du jour</span><span>→</span>';
+  // Show review button if at least 1 lesson done
+  reviewBtn.style.display = completedDays.length > 0 ? 'block' : 'none';
+
+  // Week grid
+  const dayOfWeek = ((currentDay - 1) % 7);
+  const weekStart = currentDay - dayOfWeek;
+  const dayNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  let wHtml = '';
+  for (let i = 0; i < 7; i++) {
+    const d = weekStart + i;
+    const isDone = completedDays.includes(d);
+    const isToday = d === currentDay;
+    wHtml += `<div class="week-day ${isDone?'done':''} ${isToday?'today':''}">
+      <span class="wday-num">${dayNames[i]}</span>
+      <span class="wday-icon">${isDone ? '✓' : isToday ? '◉' : '·'}</span>
+    </div>`;
+  }
+  document.getElementById('weekGrid').innerHTML = wHtml;
+
+  // Progress ring
+  const totalDays = 182;
+  const pct = Math.min(currentDay / totalDays, 1);
+  const circumference = 2 * Math.PI * 44;
+  const offset = circumference * (1 - pct);
+
+  // Phases list
+  let pHtml = '';
+  phases.forEach((p, i) => {
+    const isCurrent = i === phaseIdx;
+    const isDone = i < phaseIdx;
+    pHtml += `<div class="phase-row ${isCurrent?'current':''} ${isDone?'done':''}">
+      <div class="phase-dot"></div>
+      <div class="phase-info">
+        <div class="phase-name">${p.name}</div>
+        <div class="phase-weeks">Semaines ${p.weeks}</div>
+      </div>
+      ${isCurrent ? '<span class="phase-badge pb-current">En cours</span>' : isDone ? '<span class="phase-badge" style="background:var(--green-soft);color:var(--green);border:1px solid #bbf7d0">✓ Fait</span>' : '<span class="phase-badge pb-next">À venir</span>'}
+    </div>`;
+  });
+  document.getElementById('phasesList').innerHTML = pHtml;
+}
+
+function speak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.82;
+  const v = speechSynthesis.getVoices().find(v => v.lang.startsWith('ja'));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+initApp();
+speechSynthesis.onvoiceschanged = () => {};
+</script>
+</body>
+</html>
